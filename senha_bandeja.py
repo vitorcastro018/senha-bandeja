@@ -10,8 +10,8 @@ from PIL import Image, ImageDraw
 senha = None
 pressed_keys = set()
 
-# Atalho Ctrl + Ç
-combination = {keyboard.Key.ctrl, keyboard.KeyCode(char='l')}
+# Define a combinação como Ctrl + L
+combination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='l')}
 
 def pedir_senha():
     global senha
@@ -23,20 +23,21 @@ def pedir_senha():
 def colar_senha():
     if senha:
         pyperclip.copy(senha)
+        # Simula Ctrl+V para colar
+        kb = keyboard.Controller()
+        kb.press(keyboard.Key.ctrl)
+        kb.press('v')
+        kb.release('v')
+        kb.release(keyboard.Key.ctrl)
 
 def on_press(key):
-    if key in combination:
-        pressed_keys.add(key)
-        if all(k in pressed_keys for k in combination):
-            colar_senha()
-    else:
-        pressed_keys.clear()
+    pressed_keys.add(key)
+    if all(k in pressed_keys for k in combination):
+        colar_senha()
 
 def on_release(key):
-    try:
+    if key in pressed_keys:
         pressed_keys.remove(key)
-    except KeyError:
-        pass
 
 def iniciar_escuta():
     with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
