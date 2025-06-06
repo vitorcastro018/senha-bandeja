@@ -11,7 +11,7 @@ senha = None
 pressed_keys = set()
 
 # Atalho Ctrl + Ç
-combination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='ç')}
+combination = {keyboard.Key.ctrl, keyboard.KeyCode(char='l')}
 
 def pedir_senha():
     global senha
