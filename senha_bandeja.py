@@ -6,11 +6,10 @@ import pyperclip
 import pystray
 from pystray import MenuItem as item
 from PIL import Image, ImageDraw
+import pyautogui
 
 senha = None
 pressed_keys = set()
-
-# Define a combinação como Ctrl + L
 combination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='l')}
 
 def pedir_senha():
@@ -23,12 +22,7 @@ def pedir_senha():
 def colar_senha():
     if senha:
         pyperclip.copy(senha)
-        # Simula Ctrl+V para colar
-        kb = keyboard.Controller()
-        kb.press(keyboard.Key.ctrl)
-        kb.press('v')
-        kb.release('v')
-        kb.release(keyboard.Key.ctrl)
+        pyautogui.hotkey('ctrl', 'v')
 
 def on_press(key):
     pressed_keys.add(key)
@@ -58,9 +52,7 @@ def criar_icone():
 
     icon = pystray.Icon("SenhaAtalho")
     icon.icon = gerar_icone()
-    icon.menu = pystray.Menu(
-        item('Sair', on_exit)
-    )
+    icon.menu = pystray.Menu(item('Sair', on_exit))
     icon.run()
 
 def main():
