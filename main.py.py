@@ -1,8 +1,9 @@
+# main.py
 import tkinter as tk
 from tkinter import simpledialog
 from threading import Thread
 from pynput import keyboard
-import pyperclip
+import clipboard
 import pystray
 from pystray import MenuItem as item
 from PIL import Image, ImageDraw
@@ -10,7 +11,6 @@ import pyautogui
 
 senha = None
 pressed_keys = set()
-combination = {keyboard.Key.ctrl_l, keyboard.KeyCode.from_char('l')}
 
 def pedir_senha():
     global senha
@@ -21,13 +21,16 @@ def pedir_senha():
 
 def colar_senha():
     if senha:
-        pyperclip.copy(senha)
-        pyautogui.typewrite(pyperclip.paste())
+        clipboard.copy(senha)
+        pyautogui.typewrite(clipboard.paste())
 
 def on_press(key):
-    pressed_keys.add(key)
-    if all(k in pressed_keys for k in combination):
-        colar_senha()
+    try:
+        if isinstance(key, keyboard.KeyCode) and key.char == 'l':
+            if any(k in pressed_keys for k in [keyboard.Key.ctrl, keyboard.Key.ctrl_l, keyboard.Key.ctrl_r]):
+                colar_senha()
+    except AttributeError:
+        pressed_keys.add(key)
 
 def on_release(key):
     if key in pressed_keys:
