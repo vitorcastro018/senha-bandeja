@@ -10,7 +10,7 @@ import pyautogui
 
 senha = None
 pressed_keys = set()
-combination = {keyboard.Key.ctrl_l, keyboard.KeyCode(char='l')}
+combination = {keyboard.Key.ctrl_l, keyboard.KeyCode.from_char('l')}
 
 def pedir_senha():
     global senha
@@ -22,7 +22,7 @@ def pedir_senha():
 def colar_senha():
     if senha:
         pyperclip.copy(senha)
-        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.typewrite(pyperclip.paste())
 
 def on_press(key):
     pressed_keys.add(key)
@@ -34,8 +34,8 @@ def on_release(key):
         pressed_keys.remove(key)
 
 def iniciar_escuta():
-    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-        listener.join()
+    listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+    listener.start()
 
 def gerar_icone():
     img = Image.new('RGB', (64, 64), color='white')
@@ -57,8 +57,7 @@ def criar_icone():
 
 def main():
     pedir_senha()
-    escuta_thread = Thread(target=iniciar_escuta, daemon=True)
-    escuta_thread.start()
+    iniciar_escuta()
     criar_icone()
 
 if __name__ == "__main__":
