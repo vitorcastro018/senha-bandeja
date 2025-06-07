@@ -1,0 +1,6 @@
+tk
+pynput
+pystray
+pillow
+pyautogui
+clipboard
